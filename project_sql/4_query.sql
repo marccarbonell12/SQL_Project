@@ -4,17 +4,32 @@
 - Focuses on roles with specified salaries, regardless of location.
 - Why? It reveals how different skills impact salary levels for Data Analysts and helps identify the most financially rewarding skills to acquire or improve.*/
 
-SELECT *
---skills,
---ROUND(AVG(salary_year_avg)) AS avg_skill_salary
-
+SELECT
+skills,
+ROUND(AVG(salary_year_avg),0) AS avg_skill_salary
 FROM
-
 skills_job_dim
 JOIN job_postings_fact ON skills_job_dim.job_id = job_postings_fact.job_id
 JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+WHERE salary_year_avg IS NOT NULL AND
+    job_title ILIKE ('%analyst')
+GROUP BY skills
+ORDER BY avg_skill_salary DESC
+LIMIT 25;
 
-LIMIT 10
+----
+SELECT
+skills,
+ROUND(AVG(salary_year_avg)) AS avg_skill_salary
+FROM
+skills_job_dim
+JOIN job_postings_fact ON skills_job_dim.job_id = job_postings_fact.job_id
+JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
+WHERE salary_year_avg IS NOT NULL AND
+    job_title_short = 'Data Analyst'
+GROUP BY skills
+ORDER BY avg_skill_salary DESC
+LIMIT 25;
 
 
 
